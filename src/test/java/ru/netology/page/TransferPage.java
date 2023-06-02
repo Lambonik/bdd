@@ -12,7 +12,7 @@ public class TransferPage {
                 .shouldBe(Condition.visible);
     }
 
-    public static DashBoardPage replenishmentCard(DataHelper.CardInfo cardInfo, int amount) {
+    public DashBoardPage replenishmentCard(DataHelper.CardInfo cardInfo, int amount) {
         $("[data-test-id='amount'] input").setValue(String.valueOf(amount));
         $("[data-test-id='from'] input").setValue(cardInfo.getNumber());
         $("[data-test-id='action-transfer']").click();

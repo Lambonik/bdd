@@ -19,7 +19,7 @@ public class MoneyTransferTest {
     }
 
     @Test
-    void shouldTransferMoneyFromFirstToSecondCard() {
+    void shouldTransferMoneyFromSecondToFirstCard() {
         //Configuration.holdBrowserOpen=true;
         var loginData = DataHelper.getValidAuthInfo();
         var cardToTransferFrom = DataHelper.getSecondCardInfo();
@@ -27,19 +27,22 @@ public class MoneyTransferTest {
         new LoginPage()
                 .validLogin(loginData)
                 .validVerify(DataHelper.getVerificationCodeFor());
-        int initialBalanceFirstCard = DashBoardPage.getFirstCardBalance();
-        int initialBalanceSecondCard = DashBoardPage.getSecondCardBalance();
-        DashBoardPage.SelectTransferToFirstCard();
-        TransferPage.replenishmentCard(cardToTransferFrom, amount);
-        int finalBalanceFirstCard = DashBoardPage.getFirstCardBalance();
-        int finalBalanceSecondCard = DashBoardPage.getSecondCardBalance();
-        int calculateBalanceFirstCard = finalBalanceFirstCard - initialBalanceFirstCard;
-        int calculateBalanceSecondCard = finalBalanceSecondCard - initialBalanceSecondCard;
-        Assert.assertEquals(calculateBalanceFirstCard + calculateBalanceSecondCard, 0);
+        DashBoardPage balance = new DashBoardPage();
+        int initialBalanceFirstCard = balance.getFirstCardBalance();
+        int initialBalanceSecondCard = balance.getSecondCardBalance();
+        balance.selectTransferToFirstCard();
+        new TransferPage().replenishmentCard(cardToTransferFrom, amount);
+        int actualFinalBalanceFirstCard = balance.getFirstCardBalance();
+        int actualFinalBalanceSecondCard = balance.getSecondCardBalance();
+        int expectedFinalBalanceFirstCard = initialBalanceFirstCard + amount;
+        int expectedFinalBalanceSecondCard = initialBalanceSecondCard - amount;
+        Assert.assertEquals(actualFinalBalanceFirstCard, expectedFinalBalanceFirstCard);
+        Assert.assertEquals(actualFinalBalanceSecondCard, expectedFinalBalanceSecondCard);
+
     }
 
     @Test
-    void shouldTransferMoneyFromSecondToFirstCard() {
+    void shouldTransferMoneyFromFirstToSecondCard() {
         //Configuration.holdBrowserOpen=true;
         var loginData = DataHelper.getValidAuthInfo();
         var cardToTransferFrom = DataHelper.getFirstCardInfo();
@@ -47,14 +50,17 @@ public class MoneyTransferTest {
         new LoginPage()
                 .validLogin(loginData)
                 .validVerify(DataHelper.getVerificationCodeFor());
-        int initialBalanceFirstCard = DashBoardPage.getFirstCardBalance();
-        int initialBalanceSecondCard = DashBoardPage.getSecondCardBalance();
-        DashBoardPage.SelectTransferToSecondCard();
-        TransferPage.replenishmentCard(cardToTransferFrom, amount);
-        int finalBalanceFirstCard = DashBoardPage.getFirstCardBalance();
-        int finalBalanceSecondCard = DashBoardPage.getSecondCardBalance();
-        int calculateBalanceFirstCard = finalBalanceFirstCard - initialBalanceFirstCard;
-        int calculateBalanceSecondCard = finalBalanceSecondCard - initialBalanceSecondCard;
-        Assert.assertEquals(calculateBalanceFirstCard + calculateBalanceSecondCard, 0);
+        DashBoardPage balance = new DashBoardPage();
+        int initialBalanceFirstCard = balance.getFirstCardBalance();
+        int initialBalanceSecondCard = balance.getSecondCardBalance();
+        balance.selectTransferToSecondCard();
+        new TransferPage().replenishmentCard(cardToTransferFrom, amount);
+        int actualFinalBalanceFirstCard = balance.getFirstCardBalance();
+        int actualFinalBalanceSecondCard = balance.getSecondCardBalance();
+        int expectedFinalBalanceFirstCard = initialBalanceFirstCard - amount;
+        int expectedFinalBalanceSecondCard = initialBalanceSecondCard + amount;
+        Assert.assertEquals(actualFinalBalanceFirstCard, expectedFinalBalanceFirstCard);
+        Assert.assertEquals(actualFinalBalanceSecondCard, expectedFinalBalanceSecondCard);
     }
+
 }
